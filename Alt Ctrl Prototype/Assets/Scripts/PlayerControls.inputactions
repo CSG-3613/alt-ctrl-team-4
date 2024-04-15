@@ -22,19 +22,50 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "RopeLength",
+                    "type": "Value",
+                    "id": "2988f6de-3879-4459-b7bc-1b6147222888",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "f056681f-2270-4b2b-ae49-d506951d404c",
-                    "path": "<Mouse>/delta/y",
+                    "name": "1D Axis",
+                    "id": "453a6819-c9b8-4164-9f3f-111ae5cd9942",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "7be0d61f-be94-40f0-a442-d43c9baa9f17",
+                    "path": "<Keyboard>/2",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Throttle",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "4eadc614-61b6-403d-9e71-444eda436eac",
+                    "path": "<Keyboard>/8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 },
                 {
                     "name": "1D Axis",
@@ -66,6 +97,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Elevation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "20dbe8ac-3028-45bd-b3db-9e8e0195cfd2",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RopeLength",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "77c96a18-d382-4cc6-b589-9aa0b6b5d5e8",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RopeLength",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "53cc6753-890c-4b88-a82c-740d48e5b9b1",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RopeLength",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

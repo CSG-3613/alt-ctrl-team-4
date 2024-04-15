@@ -44,19 +44,50 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""RopeLength"",
+                    ""type"": ""Value"",
+                    ""id"": ""2988f6de-3879-4459-b7bc-1b6147222888"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""f056681f-2270-4b2b-ae49-d506951d404c"",
-                    ""path"": ""<Mouse>/delta/y"",
+                    ""name"": ""1D Axis"",
+                    ""id"": ""453a6819-c9b8-4164-9f3f-111ae5cd9942"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""7be0d61f-be94-40f0-a442-d43c9baa9f17"",
+                    ""path"": ""<Keyboard>/2"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Throttle"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""4eadc614-61b6-403d-9e71-444eda436eac"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throttle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""1D Axis"",
@@ -90,6 +121,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Elevation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""20dbe8ac-3028-45bd-b3db-9e8e0195cfd2"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RopeLength"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""77c96a18-d382-4cc6-b589-9aa0b6b5d5e8"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RopeLength"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""53cc6753-890c-4b88-a82c-740d48e5b9b1"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RopeLength"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -100,6 +164,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Standard = asset.FindActionMap("Standard", throwIfNotFound: true);
         m_Standard_Throttle = m_Standard.FindAction("Throttle", throwIfNotFound: true);
         m_Standard_Elevation = m_Standard.FindAction("Elevation", throwIfNotFound: true);
+        m_Standard_RopeLength = m_Standard.FindAction("RopeLength", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,12 +228,14 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private List<IStandardActions> m_StandardActionsCallbackInterfaces = new List<IStandardActions>();
     private readonly InputAction m_Standard_Throttle;
     private readonly InputAction m_Standard_Elevation;
+    private readonly InputAction m_Standard_RopeLength;
     public struct StandardActions
     {
         private @PlayerControls m_Wrapper;
         public StandardActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Throttle => m_Wrapper.m_Standard_Throttle;
         public InputAction @Elevation => m_Wrapper.m_Standard_Elevation;
+        public InputAction @RopeLength => m_Wrapper.m_Standard_RopeLength;
         public InputActionMap Get() { return m_Wrapper.m_Standard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -184,6 +251,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Elevation.started += instance.OnElevation;
             @Elevation.performed += instance.OnElevation;
             @Elevation.canceled += instance.OnElevation;
+            @RopeLength.started += instance.OnRopeLength;
+            @RopeLength.performed += instance.OnRopeLength;
+            @RopeLength.canceled += instance.OnRopeLength;
         }
 
         private void UnregisterCallbacks(IStandardActions instance)
@@ -194,6 +264,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Elevation.started -= instance.OnElevation;
             @Elevation.performed -= instance.OnElevation;
             @Elevation.canceled -= instance.OnElevation;
+            @RopeLength.started -= instance.OnRopeLength;
+            @RopeLength.performed -= instance.OnRopeLength;
+            @RopeLength.canceled -= instance.OnRopeLength;
         }
 
         public void RemoveCallbacks(IStandardActions instance)
@@ -215,5 +288,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     {
         void OnThrottle(InputAction.CallbackContext context);
         void OnElevation(InputAction.CallbackContext context);
+        void OnRopeLength(InputAction.CallbackContext context);
     }
 }
