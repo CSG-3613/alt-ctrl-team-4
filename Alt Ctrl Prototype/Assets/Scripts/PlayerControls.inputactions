@@ -1,0 +1,76 @@
+{
+    "name": "PlayerControls",
+    "maps": [
+        {
+            "name": "Standard",
+            "id": "317849cd-ae2b-45ea-b20c-bc3698058a5c",
+            "actions": [
+                {
+                    "name": "Throttle",
+                    "type": "Value",
+                    "id": "33ecb3be-6f58-479d-a632-32000a9fbb79",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Elevation",
+                    "type": "Value",
+                    "id": "8372ffc4-8211-4b37-b73d-57c7152d3315",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f056681f-2270-4b2b-ae49-d506951d404c",
+                    "path": "<Mouse>/delta/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "05de8a7a-2cfc-42c8-98d3-3dae76c0e2f0",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Elevation",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "8957e9a1-4e9b-479a-99db-926c2c1a120b",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Elevation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "647f230f-5e47-4872-b592-8fcaa3e4cea8",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Elevation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
