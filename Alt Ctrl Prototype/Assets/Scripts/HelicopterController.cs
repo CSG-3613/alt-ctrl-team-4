@@ -13,6 +13,7 @@ public class HelicopterController : MonoBehaviour
     public float MaxAngle = 15f;
     [Tooltip("The rotational velocity of the rotor at full throttle")]
     public float RotorSpeed = 1f;
+    public float lerpFactor = 0.01f;
 
     [Header("Animation Configuration")]
     [SerializeField]
@@ -21,6 +22,10 @@ public class HelicopterController : MonoBehaviour
     private Transform rotor;
     [SerializeField]
     private Transform tailRotor;
+
+    private float realThrottle = 0f;
+    private float rotorAngle = 0f;
+    private float tailAngle = 0f;
 
     private Rigidbody rb;
 
@@ -40,14 +45,19 @@ public class HelicopterController : MonoBehaviour
 
     void Update()
     {
-        float baseAngle = InputHandler.Instance.Throttle * MaxAngle / 2f;
+        realThrottle = Mathf.Lerp(realThrottle, InputHandler.Instance.Throttle, lerpFactor);
+
+        float baseAngle = realThrottle * MaxAngle / 2f;
         transform.localEulerAngles = new Vector3(baseAngle, 90f, 0);
         rotorBase.localEulerAngles = new Vector3(baseAngle, 0, 0);
 
-        rotor.localEulerAngles += new Vector3(0, (0.5f + InputHandler.Instance.Throttle / 2f) * RotorSpeed * Time.deltaTime);
-        tailRotor.localEulerAngles += new Vector3((0.5f + InputHandler.Instance.Throttle / 2f) * RotorSpeed * Time.deltaTime, 0);
-        //tailRotor.localEulerAngles += new Vector3(0.5f * RotorSpeed * Time.deltaTime, 0f, 0f);
-
-        rb.velocity = new Vector3(InputHandler.Instance.Throttle * MaxSpeed * Mathf.Sin(Mathf.Deg2Rad * baseAngle), InputHandler.Instance.Elevation * MaxSpeed * Mathf.Cos(Mathf.Deg2Rad * baseAngle));
+        float rotorAngleDelta = (0.5f + realThrottle / 2f) * RotorSpeed * Time.deltaTime;
+        rotorAngle = (rotorAngle + rotorAngleDelta) % 360f;
+        tailAngle = (tailAngle + rotorAngleDelta * 0.7f) % 360f;
+        
+        rotor.localEulerAngles = new Vector3(0, rotorAngle);
+        tailRotor.localEulerAngles = new Vector3(tailAngle, 0);
+        
+        rb.velocity = new Vector3(realThrottle * MaxSpeed * Mathf.Sin(Mathf.Deg2Rad * baseAngle), InputHandler.Instance.Elevation * realThrottle * MaxSpeed * Mathf.Cos(Mathf.Deg2Rad * baseAngle));
     }
 }

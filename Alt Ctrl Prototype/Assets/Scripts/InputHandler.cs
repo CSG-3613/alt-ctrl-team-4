@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
+using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
 {
@@ -18,7 +19,8 @@ public class InputHandler : MonoBehaviour
     public float Elevation { get { return elevation; } }
     public float RopeLength { get { return ropeLength; } }
 
-    private PlayerControls inputs;
+    [SerializeField]
+    private InputActionReference iaThrottle, iaElevation, iaRopeLength;
 
     private SerialPort stream;
 
@@ -50,9 +52,6 @@ public class InputHandler : MonoBehaviour
 
         Instance = this;
         
-        inputs = new PlayerControls();
-        inputs.Enable();
-
         //stream = new SerialPort(portName, baudRate);
         //stream.Open();
     }
@@ -60,11 +59,11 @@ public class InputHandler : MonoBehaviour
     void Update()
     {
         // Keyboard Input
-        throttle = 0.5f + inputs.Standard.Throttle.ReadValue<float>() / 2f;
+        throttle = 0.5f + iaThrottle.action.ReadValue<float>() / 2f;
         
-        elevation = inputs.Standard.Elevation.ReadValue<float>();
+        elevation = iaElevation.action.ReadValue<float>();
         
-        ropeLength = inputs.Standard.RopeLength.ReadValue<float>();
+        ropeLength = iaRopeLength.action.ReadValue<float>();
 
         // Arduino Input
         
