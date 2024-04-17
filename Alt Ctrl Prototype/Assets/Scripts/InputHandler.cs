@@ -8,19 +8,17 @@ public class InputHandler : MonoBehaviour
 {
     public static InputHandler Instance;
 
-    [SerializeField]
-    private float throttle = 0f;
-    [SerializeField]
-    private float elevation = 0f;
-    [SerializeField]
-    private float ropeLength = 0f;
-
     public float Throttle { get { return throttle; } }
     public float Elevation { get { return elevation; } }
     public float RopeLength { get { return ropeLength; } }
 
+    [Header("Input Action Configuration")]
     [SerializeField]
-    private InputActionReference iaThrottle, iaElevation, iaRopeLength;
+    private InputActionReference throttleIA;
+    [SerializeField]
+    private InputActionReference elevationIA;
+    [SerializeField]
+    private InputActionReference ropeLengthIA;
 
     private SerialPort stream;
 
@@ -33,6 +31,14 @@ public class InputHandler : MonoBehaviour
 
     [SerializeField]
     private int baudRate = 0;
+
+    [Header("Debug")]
+    [SerializeField]
+    private float throttle = 0f;
+    [SerializeField]
+    private float elevation = 0f;
+    [SerializeField]
+    private float ropeLength = 0f;
 
     void Start()
     {
@@ -59,11 +65,11 @@ public class InputHandler : MonoBehaviour
     void Update()
     {
         // Keyboard Input
-        throttle = 0.5f + iaThrottle.action.ReadValue<float>() / 2f;
+        throttle = 0.5f + throttleIA.action.ReadValue<float>() / 2f;
         
-        elevation = iaElevation.action.ReadValue<float>();
+        elevation = elevationIA.action.ReadValue<float>();
         
-        ropeLength = iaRopeLength.action.ReadValue<float>();
+        ropeLength = ropeLengthIA.action.ReadValue<float>();
 
         // Arduino Input
         

@@ -58,6 +58,6 @@ public class HelicopterController : MonoBehaviour
         rotor.localEulerAngles = new Vector3(0, rotorAngle);
         tailRotor.localEulerAngles = new Vector3(tailAngle, 0);
         
-        rb.velocity = new Vector3(realThrottle * MaxSpeed * Mathf.Sin(Mathf.Deg2Rad * baseAngle), InputHandler.Instance.Elevation * realThrottle * MaxSpeed * Mathf.Cos(Mathf.Deg2Rad * baseAngle));
+        rb.velocity = new Vector3(realThrottle * MaxSpeed * Mathf.Cos(Mathf.Deg2Rad * baseAngle), InputHandler.Instance.Elevation * realThrottle * MaxSpeed * Mathf.Sin(Mathf.Deg2Rad * baseAngle));
     }
 }
