@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class RopeController : MonoBehaviour
 {
+    public static RopeController Instance { get; private set; }
+
     [Tooltip("The maximum length of the rope")]
     public float MaxRopeLength = 25f;
 
@@ -17,8 +19,12 @@ public class RopeController : MonoBehaviour
     [SerializeField]
     private float ropeLength = 0;
 
-    [SerializeField]
-    private List<GameObject> segments = new();
+    public List<GameObject> segments = new();
+
+    private void Start()
+    {
+        Instance = this;
+    }
 
     void Update()
     {
