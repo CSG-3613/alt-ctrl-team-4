@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class RopeController : MonoBehaviour
 {
-
+    [Tooltip("The maximum length of the rope")]
+    public float MaxRopeLength = 25f;
 
     [SerializeField]
     private GameObject ropePrefab;
@@ -14,19 +15,27 @@ public class RopeController : MonoBehaviour
     private Transform ropeRoot;
 
     [SerializeField]
+    private float ropeLength = 0;
+
+    [SerializeField]
     private List<GameObject> segments = new();
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad1)) addSegment();
-        if (Input.GetKeyDown(KeyCode.Keypad2)) removeSegment();
+        if (Input.GetKey(KeyCode.Keypad1)) ropeLength = Mathf.Min(MaxRopeLength, ropeLength + Time.deltaTime);
+        if (Input.GetKey(KeyCode.Keypad2)) ropeLength = Mathf.Max(0, ropeLength - Time.deltaTime);
+
+        while (segments.Count < Mathf.CeilToInt(ropeLength)) addSegment();
+
+        while (segments.Count > Mathf.CeilToInt(ropeLength)) removeSegment();
+
+        if (segments.Count > 0)
+        {
+            var Child = segments.Last().transform.GetChild(0);
+            var remainder = ropeLength % 1f;
+            Child.localScale = new Vector3(1, remainder, 1);
+            Child.localPosition = new Vector3(1, 1 - remainder, 1);
+        }
     }
 
     [ContextMenu("Add Segment")]
