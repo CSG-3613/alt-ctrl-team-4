@@ -21,6 +21,8 @@ public class RopeController : MonoBehaviour
 
     public List<GameObject> segments = new();
 
+    public List<FixedJoint> connected = new();
+
     private void Start()
     {
         Instance = this;
@@ -37,10 +39,10 @@ public class RopeController : MonoBehaviour
 
         if (segments.Count > 0)
         {
-            var Child = segments.Last().transform.GetChild(0);
+            var Child = segments.First().transform.GetChild(0);
             var remainder = ropeLength % 1f;
             Child.localScale = new Vector3(1, remainder, 1);
-            Child.localPosition = new Vector3(1, 1 - remainder, 1);
+            Child.localPosition = new Vector3(0, -remainder, 0);
         }
     }
 
@@ -49,19 +51,26 @@ public class RopeController : MonoBehaviour
     {
         GameObject newSegment = Instantiate(ropePrefab, ropeRoot);
 
+        newSegment.transform.position = ropeRoot.position;
+        
         if (segments.Count > 0)
         {
             GameObject lastSegment = segments.Last();
-            newSegment.transform.position = lastSegment.transform.position - lastSegment.transform.up / 2f;
-        }
+            //lastSegment.transform.GetChild(0).localScale = Vector3.one;
+            lastSegment.transform.position = newSegment.transform.position - newSegment.transform.up / 2f;
+            for (int i = segments.Count - 1; i > 0; i--)
+            {
+                segments[i - 1].transform.position = segments[i].transform.position - segments[i].transform.up / 2f;
+            }
+            
+            HingeJoint newJoint = newSegment.GetComponent<HingeJoint>();
+            HingeJoint oldJoint = lastSegment.GetComponent<HingeJoint>();
 
-        Joint joint = newSegment.GetComponent<Joint>();
-        if (segments.Count == 0)
-        {
-            joint.autoConfigureConnectedAnchor = true;
-            joint.connectedBody = ropeRoot.GetComponent<Rigidbody>();
+            newJoint.connectedAnchor = new Vector3(0, 0);
+            newJoint.connectedBody = ropeRoot.GetComponent<Rigidbody>();
+            oldJoint.connectedAnchor = new Vector3(0, -2f);
+            oldJoint.connectedBody = newJoint.GetComponent<Rigidbody>();
         }
-        else joint.connectedBody = segments.Last().GetComponent<Rigidbody>();
 
         segments.Add(newSegment);
     }
@@ -72,6 +81,18 @@ public class RopeController : MonoBehaviour
         if (segments.Count > 0)
         {
             GameObject segment = segments.Last();
+            if (segments.Count > 1)
+            {
+                GameObject previous = segments[segments.Count - 2];
+                foreach (var joint in connected)
+                {
+                    if (joint.connectedBody.gameObject == segment)
+                    {
+                        joint.transform.position = previous.transform.position - previous.transform.up * previous.transform.localScale.y / 2f;
+                        joint.connectedBody = previous.GetComponent<Rigidbody>();
+                    }
+                }
+            }
             segments.RemoveAt(segments.Count - 1);
             Destroy(segment);
         }

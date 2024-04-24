@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 388599209}
   - component: {fileID: 388599207}
   - component: {fileID: 388599208}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -894,7 +894,7 @@ GameObject:
   - component: {fileID: 495100225}
   - component: {fileID: 495100223}
   - component: {fileID: 495100224}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1069,7 +1069,7 @@ GameObject:
   - component: {fileID: 635280762}
   - component: {fileID: 635280761}
   - component: {fileID: 635280760}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1244,7 +1244,7 @@ GameObject:
   - component: {fileID: 732342107}
   - component: {fileID: 732342105}
   - component: {fileID: 732342106}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1584,10 +1584,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2021215960378086411, guid: 0070e194b08f26b4594db614fa8f742c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8132064818662294095, guid: 0070e194b08f26b4594db614fa8f742c,
         type: 3}
       propertyPath: m_Name
       value: Cylinder 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132064818662294095, guid: 0070e194b08f26b4594db614fa8f742c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8132064818662294095, guid: 0070e194b08f26b4594db614fa8f742c,
         type: 3}
@@ -1842,7 +1852,6 @@ GameObject:
   - component: {fileID: 1294426426}
   - component: {fileID: 1294426425}
   - component: {fileID: 1294426424}
-  - component: {fileID: 1294426430}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1857,7 +1866,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1294426423}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfbfd8bfee74bb64681c5a100e18308d, type: 3}
   m_Name: 
@@ -1905,7 +1914,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1970,27 +1979,12 @@ Transform:
   m_GameObject: {fileID: 1294426423}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 39.66, y: 1.66, z: 0}
+  m_LocalPosition: {x: 39.66, y: 4.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!138 &1294426430
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1294426423}
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!54 &1428744594
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2072,7 +2066,7 @@ GameObject:
   - component: {fileID: 1605559679}
   - component: {fileID: 1605559678}
   - component: {fileID: 1605559677}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2247,7 +2241,7 @@ GameObject:
   - component: {fileID: 1677978041}
   - component: {fileID: 1677978040}
   - component: {fileID: 1677978039}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2422,7 +2416,7 @@ GameObject:
   - component: {fileID: 1858741720}
   - component: {fileID: 1858741718}
   - component: {fileID: 1858741719}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2594,7 +2588,7 @@ GameObject:
   - component: {fileID: 1936811483}
   - component: {fileID: 1936811482}
   - component: {fileID: 1936811484}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2670,6 +2664,7 @@ MonoBehaviour:
   ropeRoot: {fileID: 1936811483}
   ropeLength: 0
   segments: []
+  connected: []
 --- !u!54 &3050973120140642474 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6990345949689779698, guid: bfb996cc0bf7ae242ab21fc70e2781f9,
@@ -2734,10 +2729,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2021215960378086411, guid: bfb996cc0bf7ae242ab21fc70e2781f9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8132064818662294095, guid: bfb996cc0bf7ae242ab21fc70e2781f9,
         type: 3}
       propertyPath: m_Name
       value: Cylinder
+      objectReference: {fileID: 0}
+    - target: {fileID: 8132064818662294095, guid: bfb996cc0bf7ae242ab21fc70e2781f9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8132064818662294095, guid: bfb996cc0bf7ae242ab21fc70e2781f9,
         type: 3}
