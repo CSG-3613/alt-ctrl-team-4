@@ -8,30 +8,29 @@ public class AttachableObject : MonoBehaviour
     [Tooltip("The maximum difference in relative velocity untill the object is dropped")]
     public float MaxVelocityDifference = 10f;
 
-    private Rigidbody rb;
-
-    private Rigidbody attach;
-    private Vector3 offset;
+    private FixedJoint joint;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        joint = GetComponent<FixedJoint>();
     }
 
     private void Update()
     {
-        if (attach != null) transform.position = attach.position + offset;
-
-        GameObject closest = null;
-        foreach (GameObject segment in RopeController.Instance.segments)
+        if (joint.connectedBody == null)
         {
-            if (Vector3.Distance(segment.transform.position, transform.position) < 1) closest = segment;
-        }
+            GameObject closest = null;
+            float closestDistance = 1;
+            foreach (GameObject segment in RopeController.Instance.segments)
+            {
+                float distance = Vector3.Distance(segment.transform.position, transform.position);
+                if (distance < closestDistance) closest = segment;
+            }
 
-        if (closest != null)
-        {
-            attach = closest.GetComponent<Rigidbody>();
-            offset = transform.position - closest.transform.position;
+            if (closest != null)
+            {
+                joint.connectedBody = closest.GetComponent<Rigidbody>();
+            }
         }
     }
 
