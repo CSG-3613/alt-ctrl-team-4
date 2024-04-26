@@ -9,9 +9,9 @@ public class InputHandler : MonoBehaviour
 {
     public static InputHandler Instance;
 
-    public float Throttle { get { return throttle; } }
-    public float Elevation { get { return elevation; } }
-    public float RopeLength { get { return ropeLength; } }
+    public static float Throttle { get { return Instance.throttle; } }
+    public static float Elevation { get { return Instance.elevation; } }
+    public static float RopeLength { get { return Instance.ropeLength; } }
 
     [Header("Input Action Configuration")]
     [SerializeField]
@@ -20,11 +20,6 @@ public class InputHandler : MonoBehaviour
     private InputActionReference elevationIA;
     [SerializeField]
     private InputActionReference ropeLengthIA;
-
-    private SerialPort port = new();
-
-    [Header("Keyboard Configuration")]
-    public float ScrollFactor = 0.1f;
 
     [Header("Arduino Configuration")]    
     [SerializeField]
@@ -39,8 +34,10 @@ public class InputHandler : MonoBehaviour
     private float elevation = 0f;
     [SerializeField]
     private float ropeLength = 0f;
+    [SerializeField]
+    private string recivedData = "";
 
-    public string recivedData = "";
+    private SerialPort port = new();
 
     void Start()
     {
@@ -63,71 +60,57 @@ public class InputHandler : MonoBehaviour
 
     private void OnEnable()
     {
+        if (port.IsOpen) port.Close();
+
         port.PortName = portName;
         port.BaudRate = baudRate;
         port.NewLine = "\n";
         port.Encoding = System.Text.Encoding.ASCII;
         port.ReadTimeout = 100;
         port.Open();
-        
-        //port.DataReceived += Port_DataReceived;
     }
 
     private void OnDisable()
     {
         port.Close();
-
-        port.DataReceived -= Port_DataReceived;
-    }
-
-    // Arduino Input
-    private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-    {
-        //try
-        //{
-        //    string str = port.ReadLine();
-        //} 
-        //catch
-        //{
-        //
-        //}
     }
 
     void Update()
     {
         //Debug.Log("Port Names: " + string.Join(", ", SerialPort.GetPortNames()));
 
-        // Keyboard Input
-        //throttle = 0.5f + throttleIA.action.ReadValue<float>() / 2f;
-        //
-        //elevation = elevationIA.action.ReadValue<float>();
-        //
-        //ropeLength = ropeLengthIA.action.ReadValue<float>();
-
         if (port.IsOpen)
         {
+            // Arduino Input
+            // data format is throttle, rope length, elevation up, and elevation down values as a line terminated string with items separated by underscores.
+
             recivedData += port.ReadExisting();
             string[] lines = recivedData.Split('\n');
-            if (lines.Length < 2) return;
+            if (lines.Length < 2) return; // return if no line feed character is found.
 
-            try
-            {
-                //string line = port.ReadLine();
-                string line = lines[lines.Length - 2];
-                string[] data = line.Split('_');
-                if (data.Length != 2) return;
+            string line = lines[lines.Length - 2]; // get the most recent "complete" line.
+            string[] data = line.Split('_'); // separate items
+            if (data.Length != 2) return; // if not all items are present line is not complete.
 
-                recivedData = lines[lines.Length - 1];
-                int throttleReading = int.Parse(data[0]);
-                int ropeReading = int.Parse(data[1]);
+            recivedData = lines[lines.Length - 1]; // assign the most recent incomplete line to recived data.
+            int throttleReading = int.Parse(data[0]);
+            int ropeReading = int.Parse(data[1]);
+            int elevationUpReading = int.Parse(data[2]);
+            int elevationDownReading = int.Parse(data[3]);
 
-                Debug.Log($"Throttle: { throttleReading }\nRope: { ropeReading }");
+            // Print raw input values
+            Debug.Log($"Throttle: { throttleReading }\nRope: { ropeReading }\nElevation Up: { elevationUpReading }\nElevation Down: { elevationDownReading }");
 
-                throttle = Math.Clamp(throttleReading, 0, 1);
-                ropeLength = ropeReading / 1000;
-
-            }
-            catch { }
+            throttle = Math.Clamp(throttleReading, 0, 1);
+            ropeLength = ropeReading / 1000;
+            elevation = elevationUpReading - elevationDownReading;
+        }
+        else
+        {
+            // Keyboard Input
+            throttle = 0.5f + throttleIA.action.ReadValue<float>() / 2f;
+            elevation = elevationIA.action.ReadValue<float>();
+            ropeLength = ropeLengthIA.action.ReadValue<float>();
         }
     }
 }

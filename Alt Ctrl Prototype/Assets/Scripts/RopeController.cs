@@ -32,7 +32,7 @@ public class RopeController : MonoBehaviour
     {
         //if (Input.GetKey(KeyCode.Keypad1)) ropeLength = Mathf.Min(MaxRopeLength, ropeLength + Time.deltaTime);
         //if (Input.GetKey(KeyCode.Keypad2)) ropeLength = Mathf.Max(0, ropeLength - Time.deltaTime);
-        ropeLength = InputHandler.Instance.RopeLength;
+        ropeLength = InputHandler.RopeLength;
 
         while (segments.Count < Mathf.CeilToInt(ropeLength)) addSegment();
 

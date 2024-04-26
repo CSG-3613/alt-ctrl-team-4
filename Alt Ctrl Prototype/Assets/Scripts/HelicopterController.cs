@@ -45,7 +45,7 @@ public class HelicopterController : MonoBehaviour
 
     void Update()
     {
-        realThrottle = Mathf.Lerp(realThrottle, InputHandler.Instance.Throttle, lerpFactor);
+        realThrottle = Mathf.Lerp(realThrottle, InputHandler.Throttle, lerpFactor);
 
         float baseAngle = realThrottle * MaxAngle / 2f;
         transform.localEulerAngles = new Vector3(baseAngle, 90f, 0);
@@ -58,6 +58,6 @@ public class HelicopterController : MonoBehaviour
         rotor.localEulerAngles = new Vector3(0, rotorAngle);
         tailRotor.localEulerAngles = new Vector3(tailAngle, 0);
         
-        rb.velocity = new Vector3(realThrottle * MaxSpeed * Mathf.Cos(Mathf.Deg2Rad * baseAngle), InputHandler.Instance.Elevation * realThrottle * MaxSpeed * Mathf.Sin(Mathf.Deg2Rad * baseAngle));
+        rb.velocity = new Vector3(realThrottle * MaxSpeed * Mathf.Cos(Mathf.Deg2Rad * baseAngle), InputHandler.Elevation * realThrottle * MaxSpeed * Mathf.Sin(Mathf.Deg2Rad * baseAngle));
     }
 }
