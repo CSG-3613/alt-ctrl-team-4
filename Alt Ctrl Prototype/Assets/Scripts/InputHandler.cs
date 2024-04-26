@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO.Ports;
 using UnityEngine.InputSystem;
+using System;
 
 public class InputHandler : MonoBehaviour
 {
@@ -20,17 +21,16 @@ public class InputHandler : MonoBehaviour
     [SerializeField]
     private InputActionReference ropeLengthIA;
 
-    private SerialPort stream;
+    private SerialPort port = new();
 
     [Header("Keyboard Configuration")]
     public float ScrollFactor = 0.1f;
 
     [Header("Arduino Configuration")]    
     [SerializeField]
-    private string portName = "";
-
+    private string portName = "COM1";
     [SerializeField]
-    private int baudRate = 0;
+    private int baudRate = 9600;
 
     [Header("Debug")]
     [SerializeField]
@@ -39,6 +39,8 @@ public class InputHandler : MonoBehaviour
     private float elevation = 0f;
     [SerializeField]
     private float ropeLength = 0f;
+
+    public string recivedData = "";
 
     void Start()
     {
@@ -57,21 +59,75 @@ public class InputHandler : MonoBehaviour
         }
 
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
+        port.PortName = portName;
+        port.BaudRate = baudRate;
+        port.NewLine = "\n";
+        port.Encoding = System.Text.Encoding.ASCII;
+        port.ReadTimeout = 100;
+        port.Open();
         
-        //stream = new SerialPort(portName, baudRate);
-        //stream.Open();
+        //port.DataReceived += Port_DataReceived;
+    }
+
+    private void OnDisable()
+    {
+        port.Close();
+
+        port.DataReceived -= Port_DataReceived;
+    }
+
+    // Arduino Input
+    private void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+    {
+        //try
+        //{
+        //    string str = port.ReadLine();
+        //} 
+        //catch
+        //{
+        //
+        //}
     }
 
     void Update()
     {
-        // Keyboard Input
-        throttle = 0.5f + throttleIA.action.ReadValue<float>() / 2f;
-        
-        elevation = elevationIA.action.ReadValue<float>();
-        
-        ropeLength = ropeLengthIA.action.ReadValue<float>();
+        //Debug.Log("Port Names: " + string.Join(", ", SerialPort.GetPortNames()));
 
-        // Arduino Input
-        
+        // Keyboard Input
+        //throttle = 0.5f + throttleIA.action.ReadValue<float>() / 2f;
+        //
+        //elevation = elevationIA.action.ReadValue<float>();
+        //
+        //ropeLength = ropeLengthIA.action.ReadValue<float>();
+
+        if (port.IsOpen)
+        {
+            recivedData += port.ReadExisting();
+            string[] lines = recivedData.Split('\n');
+            if (lines.Length < 2) return;
+
+            try
+            {
+                //string line = port.ReadLine();
+                string line = lines[lines.Length - 2];
+                string[] data = line.Split('_');
+                if (data.Length != 2) return;
+
+                recivedData = lines[lines.Length - 1];
+                int throttleReading = int.Parse(data[0]);
+                int ropeReading = int.Parse(data[1]);
+
+                Debug.Log($"Throttle: { throttleReading }\nRope: { ropeReading }");
+
+                throttle = Math.Clamp(throttleReading, 0, 1);
+                ropeLength = ropeReading / 1000;
+
+            }
+            catch { }
+        }
     }
 }

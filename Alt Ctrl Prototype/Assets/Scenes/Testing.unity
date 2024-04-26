@@ -1646,11 +1646,12 @@ MonoBehaviour:
   ropeLengthIA: {fileID: -8440194222574174687, guid: 6fd4b4ba258d174469b82d956db4ada6,
     type: 3}
   ScrollFactor: 0.1
-  portName: COM
-  baudRate: 1
+  portName: COM3
+  baudRate: 9600
   throttle: 0
   elevation: 0
   ropeLength: 0
+  recivedData: 
 --- !u!4 &791254033
 Transform:
   m_ObjectHideFlags: 0
