@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HelicopterController : MonoBehaviour
 {
-    public static HelicopterController Instance;
+    public static HelicopterController Instance { get; private set; }
 
     [Header("Behavior Configuration")]
     [Tooltip("The maximum speed of the helicopter")]
@@ -13,7 +13,8 @@ public class HelicopterController : MonoBehaviour
     public float MaxAngle = 15f;
     [Tooltip("The rotational velocity of the rotor at full throttle")]
     public float RotorSpeed = 1f;
-    public float lerpFactor = 0.01f;
+    
+    public float throttleLerpFactor = 0.01f;
 
     [Header("Animation Configuration")]
     [SerializeField]
@@ -45,7 +46,7 @@ public class HelicopterController : MonoBehaviour
 
     void Update()
     {
-        realThrottle = Mathf.Lerp(realThrottle, InputHandler.Throttle, lerpFactor);
+        realThrottle = Mathf.Lerp(realThrottle, InputHandler.Throttle, throttleLerpFactor);
 
         float baseAngle = realThrottle * MaxAngle / 2f;
         transform.localEulerAngles = new Vector3(baseAngle, 90f, 0);

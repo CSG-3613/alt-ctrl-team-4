@@ -11,10 +11,26 @@ public class AttachableObject : MonoBehaviour
 
     private void Update()
     {
-        if (joint != null && joint.connectedBody == null)
+        if (joint != null)
         {
-            RopeController.Instance.connected.Remove(joint);
-            Destroy(joint);
+            if (joint.connectedBody == null)
+            {
+                RopeController.Instance.connected.Remove(joint);
+                Destroy(joint);
+            }
+
+            if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) < 3f)
+            {
+                Destroy(gameObject);
+
+                // TODO: game score
+            }
+
+            var temp = joint.connectedBody;
+
+            joint.connectedBody = null;
+            transform.position = temp.transform.position - (InputHandler.RopeLength % 1f) * temp.transform.up;
+            joint.connectedBody = temp;
         }
 
         if (joint == null)

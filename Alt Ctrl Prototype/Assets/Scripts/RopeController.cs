@@ -7,14 +7,11 @@ public class RopeController : MonoBehaviour
 {
     public static RopeController Instance { get; private set; }
 
-    [Tooltip("The maximum length of the rope")]
-    public float MaxRopeLength = 25f;
-
     [SerializeField]
     private GameObject ropePrefab;
 
     [SerializeField]
-    private Transform ropeRoot;
+    public Transform ropeRoot;
 
     [SerializeField]
     private float ropeLength = 0;
@@ -23,6 +20,8 @@ public class RopeController : MonoBehaviour
 
     public List<FixedJoint> connected = new();
 
+    public bool overwriteInputLength = false;
+
     private void Start()
     {
         Instance = this;
@@ -30,9 +29,7 @@ public class RopeController : MonoBehaviour
 
     void Update()
     {
-        //if (Input.GetKey(KeyCode.Keypad1)) ropeLength = Mathf.Min(MaxRopeLength, ropeLength + Time.deltaTime);
-        //if (Input.GetKey(KeyCode.Keypad2)) ropeLength = Mathf.Max(0, ropeLength - Time.deltaTime);
-        ropeLength = InputHandler.RopeLength;
+        if (!overwriteInputLength) ropeLength = InputHandler.RopeLength;
 
         while (segments.Count < Mathf.CeilToInt(ropeLength)) addSegment();
 
@@ -40,10 +37,10 @@ public class RopeController : MonoBehaviour
 
         if (segments.Count > 0)
         {
-            var Child = segments.First().transform.GetChild(0);
+            var child = segments.First().transform.GetChild(0);
             var remainder = ropeLength % 1f;
-            Child.localScale = new Vector3(1, remainder, 1);
-            Child.localPosition = new Vector3(0, -remainder, 0);
+            child.localScale = new Vector3(1, remainder, 1);
+            child.localPosition = new Vector3(0, -remainder, 0);
         }
     }
 
@@ -85,15 +82,19 @@ public class RopeController : MonoBehaviour
             if (segments.Count > 1)
             {
                 GameObject previous = segments[segments.Count - 2];
-                foreach (var joint in connected)
+                
+                Rigidbody root = ropeRoot.GetComponent<Rigidbody>();
+                HingeJoint joint = previous.GetComponent<HingeJoint>();
+                joint.connectedBody = root;
+                joint.connectedAnchor = new Vector3(0, 0, 0);
+                previous.transform.position = ropeRoot.transform.position;
+
+                for (int i = segments.Count - 2; i > 0; i--)
                 {
-                    if (joint.connectedBody.gameObject == segment)
-                    {
-                        joint.transform.position = previous.transform.position - previous.transform.up * previous.transform.localScale.y / 2f;
-                        joint.connectedBody = previous.GetComponent<Rigidbody>();
-                    }
+                    segments[i - 1].transform.position = segments[i].transform.position - segments[i].transform.up / 2f;
                 }
             }
+
             segments.RemoveAt(segments.Count - 1);
             Destroy(segment);
         }

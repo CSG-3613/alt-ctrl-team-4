@@ -1639,13 +1639,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ca133775b5230244b7e3bf68c1ad0a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxRopeLength: 25
   throttleIA: {fileID: 1275801686080942388, guid: 6fd4b4ba258d174469b82d956db4ada6,
     type: 3}
   elevationIA: {fileID: 2629805983879490140, guid: 6fd4b4ba258d174469b82d956db4ada6,
     type: 3}
   ropeLengthIA: {fileID: -8440194222574174687, guid: 6fd4b4ba258d174469b82d956db4ada6,
     type: 3}
-  ScrollFactor: 0.1
   portName: COM3
   baudRate: 9600
   throttle: 0
@@ -1867,7 +1867,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1294426423}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfbfd8bfee74bb64681c5a100e18308d, type: 3}
   m_Name: 
@@ -2028,7 +2028,7 @@ MonoBehaviour:
   MaxSpeed: 10
   MaxAngle: 35
   RotorSpeed: 1000
-  lerpFactor: 0.01
+  throttleLerpFactor: 0.01
   rotorBase: {fileID: 777970869}
   rotor: {fileID: 375915953}
   tailRotor: {fileID: 376003851}
@@ -2659,13 +2659,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbd1026f8e5a104469f36ec5780759fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxRopeLength: 25
   ropePrefab: {fileID: 8132064818662294095, guid: bfb996cc0bf7ae242ab21fc70e2781f9,
     type: 3}
   ropeRoot: {fileID: 1936811483}
   ropeLength: 0
   segments: []
   connected: []
+  overwriteInputLength: 0
 --- !u!54 &3050973120140642474 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6990345949689779698, guid: bfb996cc0bf7ae242ab21fc70e2781f9,

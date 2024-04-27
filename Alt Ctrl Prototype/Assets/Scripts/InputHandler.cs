@@ -7,11 +7,14 @@ using System;
 
 public class InputHandler : MonoBehaviour
 {
-    public static InputHandler Instance;
+    public static InputHandler Instance { get; private set; }
 
     public static float Throttle { get { return Instance.throttle; } }
     public static float Elevation { get { return Instance.elevation; } }
     public static float RopeLength { get { return Instance.ropeLength; } }
+
+    [Tooltip("The maximum length of the rope")]
+    public float MaxRopeLength = 25f;
 
     [Header("Input Action Configuration")]
     [SerializeField]
@@ -67,12 +70,16 @@ public class InputHandler : MonoBehaviour
         port.NewLine = "\n";
         port.Encoding = System.Text.Encoding.ASCII;
         port.ReadTimeout = 100;
-        port.Open();
+        try
+        {
+            port.Open();
+        }
+        catch { }
     }
 
     private void OnDisable()
     {
-        port.Close();
+        if (port.IsOpen) port.Close();
     }
 
     void Update()
@@ -93,24 +100,24 @@ public class InputHandler : MonoBehaviour
             if (data.Length != 2) return; // if not all items are present line is not complete.
 
             recivedData = lines[lines.Length - 1]; // assign the most recent incomplete line to recived data.
-            int throttleReading = int.Parse(data[0]);
-            int ropeReading = int.Parse(data[1]);
-            int elevationUpReading = int.Parse(data[2]);
-            int elevationDownReading = int.Parse(data[3]);
+            int throttleReading = int.Parse(data[0]);       // domain: 0..
+            int ropeReading = int.Parse(data[1]);           // domain: 0..
+            int elevationUpReading = int.Parse(data[2]);    // domain: 0..1
+            int elevationDownReading = int.Parse(data[3]);  // domain: 0..1
 
             // Print raw input values
             Debug.Log($"Throttle: { throttleReading }\nRope: { ropeReading }\nElevation Up: { elevationUpReading }\nElevation Down: { elevationDownReading }");
 
-            throttle = Math.Clamp(throttleReading, 0, 1);
-            ropeLength = ropeReading / 1000;
-            elevation = elevationUpReading - elevationDownReading;
+            throttle = Math.Clamp(throttleReading, 0, 1);                       // range: 0..1
+            ropeLength = Mathf.Clamp(ropeReading / 1000f, 0f, MaxRopeLength);   // range: 0..MaxRopeLength
+            elevation = elevationUpReading - elevationDownReading;              // range: [-1, 1]
         }
         else
         {
             // Keyboard Input
             throttle = 0.5f + throttleIA.action.ReadValue<float>() / 2f;
             elevation = elevationIA.action.ReadValue<float>();
-            ropeLength = ropeLengthIA.action.ReadValue<float>();
+            ropeLength = Mathf.Clamp(ropeLength + Time.deltaTime * ropeLengthIA.action.ReadValue<float>(), 0, MaxRopeLength);
         }
     }
 }
