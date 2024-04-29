@@ -71,6 +71,14 @@ public class RopeController : MonoBehaviour
         }
 
         segments.Add(newSegment);
+
+        for (int i = segments.Count - 1; i > 0; i--)
+        {
+            Rigidbody rbOld = segments[i - 1].GetComponent<Rigidbody>();
+            Rigidbody rbNew = segments[i].GetComponent<Rigidbody>();
+            rbNew.velocity = rbOld.velocity;
+            rbNew.angularVelocity = rbOld.angularVelocity;
+        }
     }
 
     [ContextMenu("Remove Segment")]
@@ -95,8 +103,8 @@ public class RopeController : MonoBehaviour
                 }
             }
 
-            segments.RemoveAt(segments.Count - 1);
             Destroy(segment);
+            segments.RemoveAt(segments.Count - 1);
         }
     }
 }
