@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class AttachableObject : MonoBehaviour
 {
-    [Tooltip("The maximum difference in relative velocity untill the object is dropped")]
-    public float MaxVelocityDifference = 10f;
+    [Tooltip("The distance form the rope root that the object will be collected")]
+    public float CollectionDistance = 1f;
 
+    [SerializeField]
     private FixedJoint joint;
 
     private void Update()
@@ -19,7 +20,7 @@ public class AttachableObject : MonoBehaviour
                 Destroy(joint);
             }
 
-            if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) < 3f)
+            if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) < CollectionDistance)
             {
                 Destroy(gameObject);
 
@@ -29,7 +30,7 @@ public class AttachableObject : MonoBehaviour
             var temp = joint.connectedBody;
 
             joint.connectedBody = null;
-            transform.position = temp.transform.position - (InputHandler.RopeLength % 1f) * temp.transform.up;
+            transform.position = temp.transform.position - temp.transform.up * ((InputHandler.RopeLength % 1f) / 2f);
             joint.connectedBody = temp;
         }
 
@@ -54,26 +55,4 @@ public class AttachableObject : MonoBehaviour
         }
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (attach == null)
-    //    {
-    //        var relativeVelocity = other.attachedRigidbody.velocity - rb.velocity;
-    //        if (relativeVelocity.magnitude < MaxVelocityDifference)
-    //        {
-    //            attach = other.attachedRigidbody;
-    //            offset = other.transform.position - transform.position;
-    //        }
-    //    }
-
-    //}
-
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    var relativeVelocity = other.attachedRigidbody.velocity - rb.velocity;
-    //    if (relativeVelocity.magnitude > MaxVelocityDifference)
-    //    {
-    //        attach = null;
-    //    }
-    //}
 }
