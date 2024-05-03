@@ -10,6 +10,9 @@ public class AttachableObject : MonoBehaviour
     [Tooltip("The distance form a rope segment at which the object will be become attached")]
     public float AttachDistance = 1f;
 
+    [Tooltip("The number of points awarded when retrived by the helicopter")]
+    public int PointValue = 10;
+
     private FixedJoint joint;
 
     private void Update()
@@ -25,7 +28,7 @@ public class AttachableObject : MonoBehaviour
             {
                 Destroy(gameObject);
 
-                // TODO: game score
+                GameManager.Score += PointValue;
             }
 
             var ropeSegment = joint.connectedBody;
