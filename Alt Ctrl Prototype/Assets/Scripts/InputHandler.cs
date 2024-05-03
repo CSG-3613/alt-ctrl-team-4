@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO.Ports;
 using UnityEngine.InputSystem;
 using System;
+using Unity.VisualScripting;
+using System.Linq;
 
 public class InputHandler : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class InputHandler : MonoBehaviour
     public static float Throttle { get { return Instance.throttle; } }
     public static float Elevation { get { return Instance.elevation; } }
     public static float RopeLength { get { return Instance.ropeLength; } }
+
+    private static string _COMPort = null;
 
     [Tooltip("The maximum length of the rope")]
     public float MaxRopeLength = 25f;
@@ -59,6 +63,32 @@ public class InputHandler : MonoBehaviour
         }
 
         Instance = this;
+        if (_COMPort != null) Instance.portName = _COMPort;
+    }
+
+    public static List<string> GetCOMPortNames()
+    {
+        return SerialPort.GetPortNames().ToList();
+    }
+
+    public static bool SetCOMPort(string portName)
+    {
+        if (!GetCOMPortNames().Contains(portName)) return false;
+
+        if (Instance == null) _COMPort = portName;
+        else if (Instance.port.IsOpen)
+        {
+            Instance.OnDisable();
+            Instance.portName = portName;
+            Instance.OnEnable();
+            return Instance.port.IsOpen;
+        }
+        else
+        {
+            Instance.portName = portName;
+        }
+
+        return true;
     }
 
     private void OnEnable()
