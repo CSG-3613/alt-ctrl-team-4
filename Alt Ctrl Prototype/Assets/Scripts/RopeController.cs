@@ -7,23 +7,29 @@ public class RopeController : MonoBehaviour
 {
     public static RopeController Instance { get; private set; }
 
-    [SerializeField]
-    private GameObject ropePrefab;
+    public Transform ropeRoot;
 
     [SerializeField]
-    public Transform ropeRoot;
+    private GameObject ropePrefab;
 
     [SerializeField]
     private float ropeLength = 0;
 
     public List<GameObject> segments = new();
 
-    public List<FixedJoint> connected = new();
-
-    public bool overwriteInputLength = false;
+    [Header("Debug")]
+    [SerializeField]
+    private bool overwriteInputLength = false;
 
     private void Start()
     {
+        if (Instance != null)
+        {
+            Debug.LogError("Multiple RopeConroller Instances, duplicate: " + name);
+            Destroy(this);
+            return;
+        }
+
         Instance = this;
     }
 
@@ -31,9 +37,9 @@ public class RopeController : MonoBehaviour
     {
         if (!overwriteInputLength) ropeLength = InputHandler.RopeLength;
 
-        while (segments.Count < Mathf.CeilToInt(ropeLength)) addSegment();
+        while (segments.Count < Mathf.CeilToInt(ropeLength)) AddSegment();
 
-        while (segments.Count > Mathf.CeilToInt(ropeLength)) removeSegment();
+        while (segments.Count > Mathf.CeilToInt(ropeLength)) RemoveSegment();
 
         if (segments.Count > 0)
         {
@@ -45,7 +51,7 @@ public class RopeController : MonoBehaviour
     }
 
     [ContextMenu("Add Segment")]
-    void addSegment()
+    void AddSegment()
     {
         GameObject newSegment = Instantiate(ropePrefab, ropeRoot);
 
@@ -82,7 +88,7 @@ public class RopeController : MonoBehaviour
     }
 
     [ContextMenu("Remove Segment")]
-    void removeSegment()
+    void RemoveSegment()
     {
         if (segments.Count > 0)
         {

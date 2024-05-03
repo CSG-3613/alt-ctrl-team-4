@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class AttachableObject : MonoBehaviour
 {
-    [Tooltip("The maximum difference in relative velocity untill the object is dropped")]
-    public float MaxVelocityDifference = 10f;
+    [Tooltip("The distance form the rope root that the object will be collected")]
+    public float CollectionDistance = 1f;
+
+    [Tooltip("The distance form a rope segment at which the object will be become attached")]
+    public float AttachDistance = 1f;
+
+    [Tooltip("The number of points awarded when retrived by the helicopter")]
+    public int PointValue = 10;
 
     private FixedJoint joint;
 
@@ -15,65 +21,41 @@ public class AttachableObject : MonoBehaviour
         {
             if (joint.connectedBody == null)
             {
-                RopeController.Instance.connected.Remove(joint);
                 Destroy(joint);
             }
 
-            if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) < 3f)
+            if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) < CollectionDistance)
             {
                 Destroy(gameObject);
 
-                // TODO: game score
+                GameManager.Score += PointValue;
             }
 
-            var temp = joint.connectedBody;
+            var ropeSegment = joint.connectedBody;
 
             joint.connectedBody = null;
-            transform.position = temp.transform.position - (InputHandler.RopeLength % 1f) * temp.transform.up;
-            joint.connectedBody = temp;
+            transform.position = ropeSegment.transform.position - ropeSegment.transform.up * ((InputHandler.RopeLength % 1f) / 2f);
+            joint.connectedBody = ropeSegment;
         }
 
         if (joint == null)
         {
+            if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) > 10f) return;
+
             GameObject closest = null;
-            float closestDistance = 1;
+            float closestDistance = AttachDistance;
             foreach (GameObject segment in RopeController.Instance.segments)
             {
                 float distance = Vector3.Distance(segment.transform.position, transform.position);
                 if (distance < closestDistance) closest = segment;
             }
 
-            Debug.Log($"closest: {closestDistance}, { ((closest == null) ? "null" : closest.name) }");
-
             if (closest != null)
             {
                 joint = gameObject.AddComponent<FixedJoint>();
                 joint.connectedBody = closest.GetComponent<Rigidbody>();
-                RopeController.Instance.connected.Add(joint);
             }
         }
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (attach == null)
-    //    {
-    //        var relativeVelocity = other.attachedRigidbody.velocity - rb.velocity;
-    //        if (relativeVelocity.magnitude < MaxVelocityDifference)
-    //        {
-    //            attach = other.attachedRigidbody;
-    //            offset = other.transform.position - transform.position;
-    //        }
-    //    }
-
-    //}
-
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    var relativeVelocity = other.attachedRigidbody.velocity - rb.velocity;
-    //    if (relativeVelocity.magnitude > MaxVelocityDifference)
-    //    {
-    //        attach = null;
-    //    }
-    //}
 }
