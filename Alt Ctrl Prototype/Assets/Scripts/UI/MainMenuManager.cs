@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
-using System.Linq;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -18,6 +18,7 @@ public class MainMenuManager : MonoBehaviour
     public void BTN_Play()
     {
         // TODO: load level scene
+        SceneManager.LoadScene("Level", LoadSceneMode.Single);
     }
 
     public void BTN_Settings()
