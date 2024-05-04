@@ -17,6 +17,8 @@ public class RopeController : MonoBehaviour
 
     public List<GameObject> segments = new();
 
+    public List<AttachableObject> attached = new();
+
     [Header("Debug")]
     [SerializeField]
     private bool overwriteInputLength = false;
@@ -33,7 +35,7 @@ public class RopeController : MonoBehaviour
         Instance = this;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!overwriteInputLength) ropeLength = InputHandler.RopeLength;
 
@@ -48,6 +50,15 @@ public class RopeController : MonoBehaviour
             child.localScale = new Vector3(1, remainder, 1);
             child.localPosition = new Vector3(0, -remainder, 0);
         }
+
+        attached.ForEach(x =>
+        {
+            var ropeSegment = x.joint.connectedBody;
+
+            x.joint.connectedBody = null;
+            x.transform.position = ropeSegment.transform.position - ropeSegment.transform.up * ((InputHandler.RopeLength % 1f) / 2f);
+            x.joint.connectedBody = ropeSegment;
+        });
     }
 
     [ContextMenu("Add Segment")]
@@ -56,34 +67,30 @@ public class RopeController : MonoBehaviour
         GameObject newSegment = Instantiate(ropePrefab, ropeRoot);
 
         newSegment.transform.position = ropeRoot.position;
-        
-        if (segments.Count > 0)
+
+        segments.Add(newSegment);
+        if (segments.Count > 1)
         {
-            GameObject lastSegment = segments.Last();
-            //lastSegment.transform.GetChild(0).localScale = Vector3.one;
-            lastSegment.transform.position = newSegment.transform.position - newSegment.transform.up / 2f;
+            GameObject previousSegment = segments[^2];
+
             for (int i = segments.Count - 1; i > 0; i--)
             {
-                segments[i - 1].transform.position = segments[i].transform.position - segments[i].transform.up / 2f;
+                segments[i].transform.SetPositionAndRotation(segments[i - 1].transform.position, segments[i - 1].transform.rotation);
             }
-            
+
+            segments[0].transform.SetPositionAndRotation(segments[1].transform.position - segments[1].transform.up / 2f, segments[1].transform.rotation);
+
             HingeJoint newJoint = newSegment.GetComponent<HingeJoint>();
-            HingeJoint oldJoint = lastSegment.GetComponent<HingeJoint>();
+            HingeJoint oldJoint = previousSegment.GetComponent<HingeJoint>();
 
             newJoint.connectedAnchor = new Vector3(0, 0);
             newJoint.connectedBody = ropeRoot.GetComponent<Rigidbody>();
             oldJoint.connectedAnchor = new Vector3(0, -2f);
             oldJoint.connectedBody = newJoint.GetComponent<Rigidbody>();
         }
-
-        segments.Add(newSegment);
-
-        for (int i = segments.Count - 1; i > 0; i--)
+        else
         {
-            Rigidbody rbOld = segments[i - 1].GetComponent<Rigidbody>();
-            Rigidbody rbNew = segments[i].GetComponent<Rigidbody>();
-            rbNew.velocity = rbOld.velocity;
-            rbNew.angularVelocity = rbOld.angularVelocity;
+            newSegment.GetComponent<HingeJoint>().connectedBody = ropeRoot.GetComponent<Rigidbody>();
         }
     }
 
@@ -92,21 +99,17 @@ public class RopeController : MonoBehaviour
     {
         if (segments.Count > 0)
         {
-            GameObject segment = segments.Last();
+            GameObject segment = segments[^1];
             if (segments.Count > 1)
             {
-                GameObject previous = segments[segments.Count - 2];
-                
-                Rigidbody root = ropeRoot.GetComponent<Rigidbody>();
-                HingeJoint joint = previous.GetComponent<HingeJoint>();
-                joint.connectedBody = root;
-                joint.connectedAnchor = new Vector3(0, 0, 0);
-                previous.transform.position = ropeRoot.transform.position;
-
-                for (int i = segments.Count - 2; i > 0; i--)
+                for (int i = 0; i < segments.Count - 1; i++)
                 {
-                    segments[i - 1].transform.position = segments[i].transform.position - segments[i].transform.up / 2f;
+                    segments[i].transform.SetPositionAndRotation(segments[i + 1].transform.position, segments[i + 1].transform.rotation);
                 }
+
+                HingeJoint joint = segments[^2].GetComponent<HingeJoint>();
+                joint.connectedBody = ropeRoot.GetComponent<Rigidbody>();
+                joint.connectedAnchor = new Vector3(0, 0, 0);
             }
 
             Destroy(segment);
