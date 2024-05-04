@@ -13,29 +13,25 @@ public class AttachableObject : MonoBehaviour
     [Tooltip("The number of points awarded when retrived by the helicopter")]
     public int PointValue = 10;
 
-    private FixedJoint joint;
+    public FixedJoint joint;
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (joint != null)
         {
             if (joint.connectedBody == null)
             {
+                RopeController.Instance.attached.Remove(this);
                 Destroy(joint);
             }
 
             if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) < CollectionDistance)
             {
+                RopeController.Instance.attached.Remove(this);
                 Destroy(gameObject);
 
                 GameManager.Score += PointValue;
             }
-
-            var ropeSegment = joint.connectedBody;
-
-            joint.connectedBody = null;
-            transform.position = ropeSegment.transform.position - ropeSegment.transform.up * ((InputHandler.RopeLength % 1f) / 2f);
-            joint.connectedBody = ropeSegment;
         }
 
         if (joint == null)
@@ -54,6 +50,7 @@ public class AttachableObject : MonoBehaviour
             {
                 joint = gameObject.AddComponent<FixedJoint>();
                 joint.connectedBody = closest.GetComponent<Rigidbody>();
+                RopeController.Instance.attached.Add(this);
             }
         }
     }
