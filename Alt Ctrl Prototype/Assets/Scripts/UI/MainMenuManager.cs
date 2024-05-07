@@ -54,4 +54,9 @@ public class MainMenuManager : MonoBehaviour
         PNL_MainMenu.SetActive(true);
     }
 
+    public void BTN_MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+    }
+
 }
