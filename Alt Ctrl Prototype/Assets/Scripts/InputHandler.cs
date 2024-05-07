@@ -127,19 +127,19 @@ public class InputHandler : MonoBehaviour
 
             string line = lines[lines.Length - 2]; // get the most recent "complete" line.
             string[] data = line.Split('_'); // separate items
-            if (data.Length != 2) return; // if not all items are present line is not complete.
+            if (data.Length != 4) return; // if not all items are present line is not complete.
 
             recivedData = lines[lines.Length - 1]; // assign the most recent incomplete line to recived data.
-            int throttleReading = int.Parse(data[0]);       // domain: 0..
-            int ropeReading = int.Parse(data[1]);           // domain: 0..
+            int throttleReading = int.Parse(data[0]);       // domain: 0..100
+            int ropeReading = Mathf.Abs(int.Parse(data[1]));           // domain: 0..~7000
             int elevationUpReading = int.Parse(data[2]);    // domain: 0..1
             int elevationDownReading = int.Parse(data[3]);  // domain: 0..1
 
             // Print raw input values
             Debug.Log($"Throttle: { throttleReading }\nRope: { ropeReading }\nElevation Up: { elevationUpReading }\nElevation Down: { elevationDownReading }");
 
-            throttle = Math.Clamp(throttleReading, 0, 1);                       // range: 0..1
-            ropeLength = Mathf.Clamp(ropeReading / 1000f, 0f, MaxRopeLength);   // range: 0..MaxRopeLength
+            throttle = Math.Clamp(throttleReading, 0, 100) / 100f;                       // range: 0..100
+            ropeLength = Mathf.Clamp(ropeReading / 100f, 0f, MaxRopeLength);    // range: 0..MaxRopeLength
             elevation = elevationUpReading - elevationDownReading;              // range: [-1, 1]
         }
         else
@@ -147,7 +147,7 @@ public class InputHandler : MonoBehaviour
             // Keyboard Input
             throttle = 0.5f + throttleIA.action.ReadValue<float>() / 2f;
             elevation = elevationIA.action.ReadValue<float>();
-            ropeLength = Mathf.Clamp(ropeLength + Time.deltaTime * ropeLengthIA.action.ReadValue<float>(), 0, MaxRopeLength);
+            ropeLength = Mathf.Clamp(ropeLength + Time.deltaTime * ropeLengthIA.action.ReadValue<float>() * 5f, 0, MaxRopeLength);
         }
     }
 }

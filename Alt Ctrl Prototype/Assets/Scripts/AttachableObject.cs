@@ -36,7 +36,7 @@ public class AttachableObject : MonoBehaviour
 
         if (joint == null)
         {
-            if (Vector3.Distance(transform.position, RopeController.Instance.ropeRoot.position) > 10f) return;
+            if (Mathf.Abs(transform.position.x - RopeController.Instance.ropeRoot.position.x) > 10f) return;
 
             GameObject closest = null;
             float closestDistance = AttachDistance;
