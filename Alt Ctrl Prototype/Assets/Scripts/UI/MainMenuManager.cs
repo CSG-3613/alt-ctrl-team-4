@@ -24,6 +24,7 @@ public class MainMenuManager : MonoBehaviour
     public void BTN_Settings()
     {
         PNL_MainMenu.SetActive(false);
+        RefreshCOMPorts();
         PNL_Settings.SetActive(true);
     }
 
